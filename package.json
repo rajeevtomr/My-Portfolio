@@ -1,0 +1,33 @@
+{
+  "name": "rajeev-tomar-portfolio",
+  "version": "1.0.0",
+  "description": "A modern, responsive portfolio website for Rajeev Tomar",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "dev": "python -m http.server 8000",
+    "serve": "python -m http.server 8000"
+  },
+  "keywords": [
+    "portfolio",
+    "web-developer",
+    "frontend",
+    "responsive",
+    "modern",
+    "html",
+    "css",
+    "javascript"
+  ],
+  "author": "Rajeev Tomar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/portfolio.git"
+  },
+  "homepage": "https://YOUR_USERNAME.github.io/portfolio",
+  "devDependencies": {},
+  "dependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  }
+} 
