@@ -49,15 +49,293 @@ const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('fade-in-up');
+            
+            // Add staggered animations for lists
+            if (entry.target.classList.contains('skill-items')) {
+                const items = entry.target.querySelectorAll('.skill-item');
+                items.forEach((item, index) => {
+                    setTimeout(() => {
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateX(-20px)';
+                        item.style.transition = 'all 0.5s ease';
+                        
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateX(0)';
+                        }, 100);
+                    }, index * 100);
+                });
+            }
+            
+            // Add staggered animations for project cards
+            if (entry.target.classList.contains('projects-grid')) {
+                const cards = entry.target.querySelectorAll('.project-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(30px)';
+                        card.style.transition = 'all 0.6s ease';
+                        
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 100);
+                    }, index * 200);
+                });
+            }
         }
     });
 }, observerOptions);
 
 // Observe elements for animation
 document.addEventListener('DOMContentLoaded', () => {
-    const animateElements = document.querySelectorAll('.skill-category, .project-card, .stat, .about-card');
+    const animateElements = document.querySelectorAll('.skill-category, .project-card, .stat, .about-card, .education-item, .experience-item, .skill-items, .projects-grid');
     animateElements.forEach(el => observer.observe(el));
+    
+    // Add parallax effect to sections
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        observer.observe(section);
+    });
 });
+
+// Enhanced scroll effects
+window.addEventListener('scroll', () => {
+    const scrolled = window.pageYOffset;
+    const parallaxElements = document.querySelectorAll('.hero, .about-card, .profile-card');
+    
+    parallaxElements.forEach(element => {
+        const speed = element.dataset.speed || 0.5;
+        const yPos = -(scrolled * speed);
+        element.style.transform = `translateY(${yPos}px)`;
+    });
+    
+    // Add scroll-triggered color changes
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+        }
+    });
+});
+
+// Add floating animation to elements
+function addFloatingAnimation() {
+    const floatingElements = document.querySelectorAll('.stat, .skill-category, .project-card');
+    floatingElements.forEach((element, index) => {
+        element.style.animationDelay = `${index * 0.2}s`;
+        element.classList.add('floating');
+    });
+}
+
+// Add CSS for floating animation
+const floatingStyles = document.createElement('style');
+floatingStyles.textContent = `
+    .floating {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .slide-in-left {
+        animation: slideInLeft 0.8s ease-out forwards;
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .slide-in-right {
+        animation: slideInRight 0.8s ease-out forwards;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .scale-in {
+        animation: scaleIn 0.6s ease-out forwards;
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .rotate-in {
+        animation: rotateIn 0.8s ease-out forwards;
+    }
+    
+    @keyframes rotateIn {
+        from {
+            opacity: 0;
+            transform: rotate(-180deg) scale(0.8);
+        }
+        to {
+            opacity: 1;
+            transform: rotate(0deg) scale(1);
+        }
+    }
+`;
+document.head.appendChild(floatingStyles);
+
+// Initialize floating animations
+document.addEventListener('DOMContentLoaded', () => {
+    addFloatingAnimation();
+    
+    // Add scroll-triggered animations for timeline items
+    const timelineItems = document.querySelectorAll('.education-item, .experience-item');
+    timelineItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-50px)';
+        
+        const itemObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                        entry.target.style.transition = 'all 0.8s ease';
+                    }, index * 200);
+                    itemObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        itemObserver.observe(item);
+    });
+});
+
+// Enhanced hover effects
+document.addEventListener('DOMContentLoaded', () => {
+    // Add ripple effect to buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.classList.add('ripple');
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+    
+    // Add ripple effect styles
+    const rippleStyles = document.createElement('style');
+    rippleStyles.textContent = `
+        .btn {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(rippleStyles);
+});
+
+// Add smooth reveal animations for sections
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+        }
+    });
+}, { threshold: 0.1 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('section');
+    sections.forEach(section => {
+        section.classList.add('section-reveal');
+        revealObserver.observe(section);
+    });
+});
+
+// Add section reveal styles
+const revealStyles = document.createElement('style');
+revealStyles.textContent = `
+    .section-reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s ease;
+    }
+    
+    .section-reveal.revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .section-reveal:nth-child(even) {
+        transform: translateY(-50px);
+    }
+`;
+document.head.appendChild(revealStyles);
 
 // Contact form handling
 const contactForm = document.querySelector('.contact-form');
